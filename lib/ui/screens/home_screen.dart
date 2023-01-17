@@ -7,11 +7,25 @@ import 'package:bazy_flutter/ui/widgets/film_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user.dart';
 import '../../routing/app_router.dart';
 import '../widgets/person_list_tile.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late final User? _user;
+
+  @override
+  void initState() {
+    _user = context.read<DatabaseService>().user;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,24 +143,60 @@ class HomeScreen extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          children: [
-            const Icon(
-              Icons.account_circle_outlined,
-              size: 50,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).scaffoldBackgroundColor,
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 2,
+                  offset: Offset(1.5, 1.5),
+                )
+              ],
             ),
-            Text(context.read<DatabaseService>().user?.username ??
-                'Nie zalogowany'),
-          ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  const Icon(
+                    Icons.account_circle_outlined,
+                    size: 50,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(_user?.username ?? 'Nie zalogowany'),
+                ],
+              ),
+            ),
+          ),
         ),
-        ExpandedButton(
-          onTap: () {
-            context.read<DatabaseService>().deleteUser();
-            context.router.pop();
-          },
-          text: context.read<DatabaseService>().user == null
-              ? 'Zaloguj'
-              : 'Wyloguj',
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            if (_user != null && _user?.accessLevel == 0) ...const [
+              ExpandedButton(
+                text: 'Moderacja komentarzy',
+              ),
+              ExpandedButton(
+                text: 'Dodanie filmów',
+              ),
+              ExpandedButton(
+                text: 'Dodanie aktorów',
+              )
+            ],
+            ExpandedButton(
+              onTap: () {
+                context.read<DatabaseService>().deleteUser();
+                context.router.pop();
+              },
+              text: _user == null ? 'Zaloguj' : 'Wyloguj',
+            ),
+            const SizedBox(height: 10),
+          ],
         )
       ],
     );
