@@ -84,5 +84,10 @@ class DatabaseService extends ChangeNotifier {
     return comments;
   }
 
+  Future<void> sendComment(int filmId, String desc) async {
+    await database.execute(
+        "INSERT INTO Based.Komentarz (FilmID, UzytkownikID, Tresc) VALUES ('$filmId', '${user!.userId}', '$desc')");
+  }
+
   void deleteUser() => user = null;
 }

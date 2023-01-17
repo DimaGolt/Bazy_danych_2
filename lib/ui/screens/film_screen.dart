@@ -1,5 +1,6 @@
 import 'package:bazy_flutter/models/film.dart';
 import 'package:bazy_flutter/services/database_service.dart';
+import 'package:bazy_flutter/ui/widgets/film_rating.dart';
 import 'package:bazy_flutter/ui/widgets/person_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import '../../models/person.dart';
 import '../../models/comment.dart';
 import '../widgets/comment_tile.dart';
 import '../widgets/expanded_button.dart';
+import '../widgets/new_comment_widget.dart';
 
 class FilmScreen extends StatefulWidget {
   final Film film;
@@ -46,14 +48,29 @@ class _FilmScreenState extends State<FilmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(film.name),
+        centerTitle: true,
+      ),
+      bottomNavigationBar: Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: NewCommentWidget(
+          film: film,
+          afterSubmit: () {
+            _refreshComments();
+            setState(() {});
+          },
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: Text(film.name)),
+              SizedBox(height: 20),
               ..._filmDesc(),
+              FilmRating(),
               SizedBox(height: 20),
               ..._cast(),
               ..._comments(),

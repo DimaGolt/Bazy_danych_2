@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         bottomNavigationBar: Container(
           color: Colors.greenAccent,
           child: const TabBar(
+            indicatorColor: Colors.black,
             tabs: [
               Tab(icon: Icon(Icons.dataset_outlined)),
               Tab(icon: Icon(Icons.home)),

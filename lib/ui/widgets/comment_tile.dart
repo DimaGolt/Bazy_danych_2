@@ -15,7 +15,10 @@ class CommentTile extends StatelessWidget {
           SizedBox(
             width: 40,
             height: 40,
-            child: const Icon(Icons.account_circle),
+            child: const Icon(
+              Icons.account_circle,
+              color: Colors.greenAccent,
+            ),
           ),
           Text(comment.username),
         ],
