@@ -1,0 +1,12 @@
+Drop table Rola;
+Drop table NagrodaAktor;
+Drop table Komentarz;
+Drop table Obsada;
+Drop table Ocena;
+Drop table Recenzja;
+Drop table KomentarzHistoria;
+Drop table Uzytkownik;
+Drop table NagrodaFilm;
+Drop table Film;
+Drop view FilmyWidok;
+Drop view AktorzyWidok;
