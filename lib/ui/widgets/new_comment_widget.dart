@@ -33,7 +33,7 @@ class NewCommentWidget extends StatelessWidget {
     String comment = '';
 
     return Container(
-      height: 200,
+      height: 150,
       child: Column(
         children: [
           TextField(

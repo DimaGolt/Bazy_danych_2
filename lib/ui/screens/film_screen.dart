@@ -22,6 +22,7 @@ class FilmScreen extends StatefulWidget {
 class _FilmScreenState extends State<FilmScreen> {
   late Future<List<Person>> futureCast;
   late Future<List<Comment>> futureComments;
+  late Future<List<Comment>> futureProfessionalOpinion;
   late Future<int?> futureRating;
   List<Person> cast = [];
 
@@ -31,6 +32,7 @@ class _FilmScreenState extends State<FilmScreen> {
   void initState() {
     _refreshCast();
     _refreshComments();
+    _refreshOpinion();
     _getPreviousRating();
     super.initState();
   }
@@ -45,6 +47,11 @@ class _FilmScreenState extends State<FilmScreen> {
 
   _refreshComments() {
     futureComments = context.read<DatabaseService>().getComments(film.id);
+  }
+
+  _refreshOpinion() {
+    futureProfessionalOpinion =
+        context.read<DatabaseService>().getOpinion(film.id);
   }
 
   _getPreviousRating() {
@@ -80,6 +87,7 @@ class _FilmScreenState extends State<FilmScreen> {
               const SizedBox(height: 20),
               ..._cast(),
               ..._comments(),
+              ..._professionalOpinion(),
             ],
           ),
         ),
@@ -132,41 +140,45 @@ class _FilmScreenState extends State<FilmScreen> {
   _cast() {
     return [
       if (cast.isNotEmpty) const Center(child: Text('Obsada')),
-      SizedBox(
-        height: 150,
-        child: FutureBuilder(
-          future: futureCast,
-          builder: (context, snap) {
-            if (snap.hasData) {
+      FutureBuilder(
+        future: futureCast,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            if (snap.data!.isNotEmpty) {
               cast.addAll(snap.data!);
-              return ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snap.data!.length,
-                  itemBuilder: (context, index) {
-                    return PersonWidget(person: snap.data!.elementAt(index));
-                  });
-            } else if (snap.hasError) {
-              return Center(
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                    const Text('Something went wrong. Please, try again'),
-                    ExpandedButton(
-                      onTap: _refreshCast,
-                      text: 'Retry',
-                    ),
-                  ],
-                ),
+              return SizedBox(
+                height: 150,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snap.data!.length,
+                    itemBuilder: (context, index) {
+                      return PersonWidget(person: snap.data!.elementAt(index));
+                    }),
               );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return SizedBox();
             }
-          },
-        ),
+          } else if (snap.hasError) {
+            return Center(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  const Text('Something went wrong. Please, try again'),
+                  ExpandedButton(
+                    onTap: _refreshCast,
+                    text: 'Retry',
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     ];
   }
@@ -187,6 +199,73 @@ class _FilmScreenState extends State<FilmScreen> {
                   )
                 : const Center(
                     child: Text(' Nie ma komentarzy'),
+                  );
+          } else if (snap.hasError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  const Text('Something went wrong. Please, try again'),
+                  ExpandedButton(
+                    onTap: _refreshComments,
+                    text: 'Retry',
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    ];
+  }
+
+  _professionalOpinion() {
+    return [
+      Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              'Recenzje',
+              style: TextStyle(fontSize: 20),
+            ),
+            Icon(
+              Icons.star,
+              color: Colors.amber,
+            )
+          ],
+        ),
+      ),
+      FutureBuilder(
+        future: futureProfessionalOpinion,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return snap.data!.isNotEmpty
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: snap.data!
+                        .map((comment) => CommentTile(
+                              comment: comment,
+                              professional: true,
+                            ))
+                        .toList(),
+                  )
+                : Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        const Text(' Nie ma recenzji'),
+                      ],
+                    ),
                   );
           } else if (snap.hasError) {
             return Center(

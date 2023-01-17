@@ -4,7 +4,10 @@ import '../../models/comment.dart';
 
 class CommentTile extends StatelessWidget {
   final Comment comment;
-  const CommentTile({Key? key, required this.comment}) : super(key: key);
+  final bool professional;
+  const CommentTile(
+      {Key? key, required this.comment, this.professional = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +18,15 @@ class CommentTile extends StatelessWidget {
           SizedBox(
             width: 40,
             height: 40,
-            child: const Icon(
-              Icons.account_circle,
-              color: Colors.greenAccent,
-            ),
+            child: professional
+                ? const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  )
+                : const Icon(
+                    Icons.account_circle,
+                    color: Colors.greenAccent,
+                  ),
           ),
           Text(comment.username),
         ],

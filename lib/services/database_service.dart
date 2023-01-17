@@ -84,6 +84,17 @@ class DatabaseService extends ChangeNotifier {
     return comments;
   }
 
+  Future<List<Comment>> getOpinion(int filmId) async {
+    var result = await database.execute(
+        'SELECT * FROM Based.RecenzjeWidok where FilmId = :filmId',
+        {"filmId": filmId});
+    List<Comment> comments = result.rows
+        .map((row) =>
+            Comment(int.parse(row.colAt(0)!), row.colAt(2)!, row.colAt(3)!))
+        .toList();
+    return comments;
+  }
+
   Future<void> sendComment(int filmId, String desc) async {
     await database.execute(
         "INSERT INTO Based.Komentarz (FilmID, UzytkownikID, Tresc) VALUES ('$filmId', '${user!.userId}', '$desc')");
@@ -91,7 +102,7 @@ class DatabaseService extends ChangeNotifier {
 
   Future<void> sendRating(int filmId, int rating) async {
     await database.execute(
-        "INSERT INTO Based.Ocena (FilmID, UzytkownikID, Wartosc) VALUES ('$filmId', '${user!.userId}', '$rating');");
+        "INSERT INTO Based.Ocena (FilmID, UzytkownikID, Wartosc) VALUES ('$filmId', '${user!.userId}', '$rating')");
   }
 
   Future<int?> getRating(int filmId) async {
