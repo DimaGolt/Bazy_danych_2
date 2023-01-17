@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 
+import '../models/film.dart';
 import '../models/user.dart';
 
 class DatabaseService extends ChangeNotifier {
@@ -16,11 +17,6 @@ class DatabaseService extends ChangeNotifier {
     );
 
     await database.connect();
-  }
-
-  fetchData() async {
-    var result = await database.execute('SELECT * FROM Based.Uzytkownik');
-    print(result.rows.elementAt(2).colAt(1));
   }
 
   Future<bool> login(String username, String password) async {
@@ -48,4 +44,15 @@ class DatabaseService extends ChangeNotifier {
 
     return user == null ? false : true;
   }
+
+  Future<List<Film>> getFilms() async {
+    var result = await database.execute('SELECT * FROM Based.Film;');
+    List<Film> films = result.rows
+        .map((row) => Film(int.parse(row.colAt(0)!), int.parse(row.colAt(1)!),
+            row.colAt(2)!, row.colAt(3)!, row.colAt(4)!))
+        .toList();
+    return films;
+  }
+
+  void deleteUser() => user = null;
 }

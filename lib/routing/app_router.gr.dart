@@ -41,6 +41,16 @@ class _$AppRouter extends RootStackRouter {
         child: const HomeScreen(),
       );
     },
+    FilmScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<FilmScreenRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: FilmScreen(
+          key: args.key,
+          film: args.film,
+        ),
+      );
+    },
   };
 
   @override
@@ -60,6 +70,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           HomeScreenRoute.name,
           path: '/home-screen',
+        ),
+        RouteConfig(
+          FilmScreenRoute.name,
+          path: '/film-screen',
         ),
       ];
 }
@@ -110,4 +124,38 @@ class HomeScreenRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'HomeScreenRoute';
+}
+
+/// generated route for
+/// [FilmScreen]
+class FilmScreenRoute extends PageRouteInfo<FilmScreenRouteArgs> {
+  FilmScreenRoute({
+    Key? key,
+    required Film film,
+  }) : super(
+          FilmScreenRoute.name,
+          path: '/film-screen',
+          args: FilmScreenRouteArgs(
+            key: key,
+            film: film,
+          ),
+        );
+
+  static const String name = 'FilmScreenRoute';
+}
+
+class FilmScreenRouteArgs {
+  const FilmScreenRouteArgs({
+    this.key,
+    required this.film,
+  });
+
+  final Key? key;
+
+  final Film film;
+
+  @override
+  String toString() {
+    return 'FilmScreenRouteArgs{key: $key, film: $film}';
+  }
 }

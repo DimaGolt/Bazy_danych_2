@@ -37,27 +37,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         children: [
           ExpandedButton(
             text: 'Login',
-            onTap: () {
-              context.pushRoute(const LoginScreenRoute());
-            },
+            onTap: () => context.router.push(const LoginScreenRoute()),
           ),
           ExpandedButton(
             text: 'Register',
-            onTap: () {
-              context.pushRoute(const RegisterScreenRoute());
-            },
+            onTap: () => context.router.push(const RegisterScreenRoute()),
           ),
           ExpandedButton(
+            onTap: () => context.router.push(const HomeScreenRoute()),
             text: 'Skip',
           ),
         ],
       ),
       body: Center(
-        child: Image.asset(
-          "assets/pikachu.gif",
-          height: 500,
-          width: 500,
-        ),
+        child: Image.asset("assets/pikachu.gif"),
       ),
     );
   }

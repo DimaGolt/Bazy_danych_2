@@ -3,6 +3,8 @@ import 'package:bazy_flutter/ui/screens/home_screen.dart';
 import 'package:bazy_flutter/ui/screens/register_screen.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/film.dart';
+import '../ui/screens/film_screen.dart';
 import '../ui/screens/login_screen.dart';
 import '../ui/screens/welcome_screen.dart';
 
@@ -13,6 +15,7 @@ part 'app_router.gr.dart';
   AutoRoute(page: LoginScreen),
   AutoRoute(page: RegisterScreen),
   AutoRoute(page: HomeScreen),
+  AutoRoute(page: FilmScreen),
   // AutoRoute(page: DeveloperScreen),
 ])
 
