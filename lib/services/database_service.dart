@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mysql_client/mysql_client.dart';
 
 import '../models/film.dart';
+import '../models/person.dart';
 import '../models/user.dart';
 
 class DatabaseService extends ChangeNotifier {
@@ -52,6 +53,17 @@ class DatabaseService extends ChangeNotifier {
             row.colAt(2)!, row.colAt(3)!, row.colAt(4)!))
         .toList();
     return films;
+  }
+
+  Future<List<Person>> getPeople(int filmId) async {
+    var result = await database.execute(
+        'SELECT * FROM Based.RolaWidok where id = :filmId', {"filmId": filmId});
+    List<Person> people = result.rows
+        .map((row) => Person(int.parse(row.colAt(1)!), row.colAt(2)!,
+            row.colAt(3)!, row.colAt(4)!, row.colAt(5)!, row.colAt(7)!,
+            dateOfDeath: row.colAt(6)))
+        .toList();
+    return people;
   }
 
   void deleteUser() => user = null;

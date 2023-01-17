@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bazy_flutter/models/film.dart';
 import 'package:bazy_flutter/services/database_service.dart';
-import 'package:bazy_flutter/ui/screens/film_screen.dart';
 import 'package:bazy_flutter/ui/widgets/expanded_button.dart';
 import 'package:bazy_flutter/ui/widgets/film_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -57,20 +56,22 @@ class HomeScreen extends StatelessWidget {
                   );
                 });
           } else if (snap.hasError) {
-            return Column(
-              children: [
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                ),
-                Text('Something went wrong. Please, try again'),
-                ExpandedButton(
-                  onTap: () {
-                    futureFilms = context.read<DatabaseService>().getFilms();
-                  },
-                  text: 'Retry',
-                ),
-              ],
+            return Center(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  Text('Something went wrong. Please, try again'),
+                  ExpandedButton(
+                    onTap: () {
+                      futureFilms = context.read<DatabaseService>().getFilms();
+                    },
+                    text: 'Retry',
+                  ),
+                ],
+              ),
             );
           } else {
             return Center(child: CircularProgressIndicator());
