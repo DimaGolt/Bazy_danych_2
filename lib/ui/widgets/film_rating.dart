@@ -1,9 +1,17 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:bazy_flutter/models/film.dart';
+import 'package:bazy_flutter/services/database_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../routing/app_router.dart';
 import 'expanded_button.dart';
 
 class FilmRating extends StatefulWidget {
-  const FilmRating({Key? key}) : super(key: key);
+  final int? previousValue;
+  final Film film;
+  const FilmRating({Key? key, this.previousValue, required this.film})
+      : super(key: key);
 
   @override
   State<FilmRating> createState() => _FilmRatingState();
@@ -11,12 +19,13 @@ class FilmRating extends StatefulWidget {
 
 class _FilmRatingState extends State<FilmRating> {
   late final ValueNotifier<int> rating;
-  final ValueNotifier<bool> beenRated = ValueNotifier(false);
+  late final ValueNotifier<bool> beenRated;
 
   @override
   void initState() {
     super.initState();
-    rating = ValueNotifier(0);
+    rating = ValueNotifier(widget.previousValue ?? 0);
+    beenRated = ValueNotifier(widget.previousValue == null ? false : true);
   }
 
   @override
@@ -30,14 +39,31 @@ class _FilmRatingState extends State<FilmRating> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildStarsRow(context),
-          SizedBox(height: 8),
-          _buildBottom(context),
-        ],
-      ),
+      child: context.read<DatabaseService>().user != null
+          ? Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildStarsRow(context),
+                  SizedBox(height: 8),
+                  _buildBottom(context),
+                ],
+              ),
+            )
+          : _accessDenied(context),
+    );
+  }
+
+  _accessDenied(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Żeby dodać komentarz musisz być zalogowany'),
+        ExpandedButton(
+          text: 'Zaloguj',
+          onTap: () => context.router.push(const LoginScreenRoute()),
+        ),
+      ],
     );
   }
 
@@ -69,6 +95,9 @@ class _FilmRatingState extends State<FilmRating> {
                 )
               : ExpandedButton(
                   onTap: () {
+                    context
+                        .read<DatabaseService>()
+                        .sendRating(widget.film.id, rating.value);
                     beenRated.value = true;
                   },
                   text: 'Oceń',

@@ -22,6 +22,7 @@ class FilmScreen extends StatefulWidget {
 class _FilmScreenState extends State<FilmScreen> {
   late Future<List<Person>> futureCast;
   late Future<List<Comment>> futureComments;
+  late Future<int?> futureRating;
   List<Person> cast = [];
 
   Film get film => widget.film;
@@ -30,6 +31,7 @@ class _FilmScreenState extends State<FilmScreen> {
   void initState() {
     _refreshCast();
     _refreshComments();
+    _getPreviousRating();
     super.initState();
   }
 
@@ -43,6 +45,10 @@ class _FilmScreenState extends State<FilmScreen> {
 
   _refreshComments() {
     futureComments = context.read<DatabaseService>().getComments(film.id);
+  }
+
+  _getPreviousRating() {
+    futureRating = context.read<DatabaseService>().getRating(film.id);
   }
 
   @override
@@ -68,10 +74,10 @@ class _FilmScreenState extends State<FilmScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ..._filmDesc(),
-              FilmRating(),
-              SizedBox(height: 20),
+              _filmRating(),
+              const SizedBox(height: 20),
               ..._cast(),
               ..._comments(),
             ],
@@ -88,6 +94,39 @@ class _FilmScreenState extends State<FilmScreen> {
       if (film.genre != 'NULL') Text('Gatunek: ${film.genre}'),
       Text('Średnia ocena: ${film.rating.toStringAsFixed(2)}')
     ];
+  }
+
+  _filmRating() {
+    return FutureBuilder(
+      future: futureRating,
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.done) {
+          return FilmRating(
+            previousValue: snap.data,
+            film: film,
+          );
+        } else if (snap.hasError) {
+          return Center(
+            child: Column(
+              children: [
+                const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+                const Text('Something went wrong. Please, try again'),
+                ExpandedButton(
+                  active: true,
+                  onTap: _getPreviousRating(),
+                  text: 'Retry',
+                ),
+              ],
+            ),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
   _cast() {

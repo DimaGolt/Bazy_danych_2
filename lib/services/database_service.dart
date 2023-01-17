@@ -89,5 +89,19 @@ class DatabaseService extends ChangeNotifier {
         "INSERT INTO Based.Komentarz (FilmID, UzytkownikID, Tresc) VALUES ('$filmId', '${user!.userId}', '$desc')");
   }
 
+  Future<void> sendRating(int filmId, int rating) async {
+    await database.execute(
+        "INSERT INTO Based.Ocena (FilmID, UzytkownikID, Wartosc) VALUES ('$filmId', '${user!.userId}', '$rating');");
+  }
+
+  Future<int?> getRating(int filmId) async {
+    var result = null;
+    if (user != null) {
+      result = await database.execute(
+          "SELECT * FROM Based.Ocena where UzytkownikID = ${user!.userId} and FilmID = $filmId");
+    }
+    return int.tryParse(result?.rows.first.colAt(3) ?? '1f');
+  }
+
   void deleteUser() => user = null;
 }
