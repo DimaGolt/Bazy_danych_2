@@ -42,7 +42,7 @@ class _FilmScreenState extends State<FilmScreen> {
   }
 
   _refreshCast() {
-    futureCast = context.read<DatabaseService>().getPeople(film.id)
+    futureCast = context.read<DatabaseService>().getPeopleForFilm(film.id)
       ..then((value) {
         cast.addAll(value);
         setState(() {});

@@ -63,9 +63,19 @@ class DatabaseService extends ChangeNotifier {
     return films;
   }
 
-  Future<List<Person>> getPeople(int filmId) async {
+  Future<List<Person>> getPeopleForFilm(int filmId) async {
     var result = await database.execute(
         'SELECT * FROM Based.RolaWidok where id = :filmId', {"filmId": filmId});
+    List<Person> people = result.rows
+        .map((row) => Person(int.parse(row.colAt(1)!), row.colAt(2)!,
+            row.colAt(3)!, row.colAt(4)!, row.colAt(5)!, row.colAt(7)!,
+            dateOfDeath: row.colAt(6)))
+        .toList();
+    return people;
+  }
+
+  Future<List<Person>> getPeople() async {
+    var result = await database.execute('SELECT * FROM Based.RolaWidok');
     List<Person> people = result.rows
         .map((row) => Person(int.parse(row.colAt(1)!), row.colAt(2)!,
             row.colAt(3)!, row.colAt(4)!, row.colAt(5)!, row.colAt(7)!,

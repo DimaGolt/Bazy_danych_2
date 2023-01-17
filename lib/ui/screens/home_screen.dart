@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bazy_flutter/models/film.dart';
+import 'package:bazy_flutter/models/person.dart';
 import 'package:bazy_flutter/services/database_service.dart';
 import 'package:bazy_flutter/ui/widgets/expanded_button.dart';
 import 'package:bazy_flutter/ui/widgets/film_list_tile.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../routing/app_router.dart';
+import '../widgets/person_list_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class HomeScreen extends StatelessWidget {
             indicatorColor: Colors.black,
             tabs: [
               Tab(icon: Icon(Icons.dataset_outlined)),
-              Tab(icon: Icon(Icons.home)),
+              Tab(icon: Icon(Icons.people_sharp)),
               Tab(icon: Icon(Icons.account_circle_outlined)),
             ],
           ),
@@ -31,7 +33,7 @@ class HomeScreen extends StatelessWidget {
           child: TabBarView(
             children: [
               _filmListTab(context),
-              Image.asset("assets/pikachu.gif"),
+              _peopleListTab(context),
               _profileTab(context),
             ],
           ),
@@ -60,11 +62,11 @@ class HomeScreen extends StatelessWidget {
             return Center(
               child: Column(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.error,
                     color: Colors.red,
                   ),
-                  Text('Coś poszło nie tak. Spróbuj ponownie'),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
                   ExpandedButton(
                     onTap: () {
                       futureFilms = context.read<DatabaseService>().getFilms();
@@ -75,7 +77,49 @@ class HomeScreen extends StatelessWidget {
               ),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
+
+  _peopleListTab(BuildContext context) {
+    Future<List<Person>> futurePeople =
+        context.read<DatabaseService>().getPeople();
+    return FutureBuilder(
+        future: futurePeople,
+        builder: (_, snap) {
+          if (snap.hasData) {
+            return ListView.builder(
+                itemCount: snap.data!.length,
+                itemBuilder: (context, index) {
+                  var person = snap.data!.elementAt(index);
+                  return PersonListTile(
+                    onTap: () =>
+                        context.router.push(PersonScreenRoute(person: person)),
+                    person: person,
+                  );
+                });
+          } else if (snap.hasError) {
+            return Center(
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
+                  ExpandedButton(
+                    onTap: () {
+                      futurePeople =
+                          context.read<DatabaseService>().getPeople();
+                    },
+                    text: 'Spróbuj ponownie',
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
           }
         });
   }
