@@ -2,11 +2,13 @@ import 'package:bazy_flutter/models/film.dart';
 import 'package:bazy_flutter/services/database_service.dart';
 import 'package:bazy_flutter/ui/widgets/film_rating.dart';
 import 'package:bazy_flutter/ui/widgets/person_widget.dart';
+import 'package:bazy_flutter/ui/widgets/prize_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/person.dart';
 import '../../models/comment.dart';
+import '../../models/prize.dart';
 import '../widgets/comment_tile.dart';
 import '../widgets/expanded_button.dart';
 import '../widgets/new_comment_widget.dart';
@@ -24,6 +26,7 @@ class _FilmScreenState extends State<FilmScreen> {
   late Future<List<Comment>> futureComments;
   late Future<List<Comment>> futureProfessionalOpinion;
   late Future<int?> futureRating;
+  late Future<List<Prize>> futurePrizes;
   List<Person> cast = [];
 
   Film get film => widget.film;
@@ -34,6 +37,7 @@ class _FilmScreenState extends State<FilmScreen> {
     _refreshComments();
     _refreshOpinion();
     _getPreviousRating();
+    _getPrizes();
     super.initState();
   }
 
@@ -56,6 +60,10 @@ class _FilmScreenState extends State<FilmScreen> {
 
   _getPreviousRating() {
     futureRating = context.read<DatabaseService>().getRating(film.id);
+  }
+
+  _getPrizes() {
+    futurePrizes = context.read<DatabaseService>().getPrizes(film.id);
   }
 
   @override
@@ -86,6 +94,7 @@ class _FilmScreenState extends State<FilmScreen> {
               ..._filmDesc(),
               _filmRating(),
               const SizedBox(height: 20),
+              ..._prizes(),
               ..._cast(),
               ..._comments(),
               ..._professionalOpinion(),
@@ -122,11 +131,11 @@ class _FilmScreenState extends State<FilmScreen> {
                   Icons.error,
                   color: Colors.red,
                 ),
-                const Text('Something went wrong. Please, try again'),
+                const Text('Coś poszło nie tak. Spróbuj ponownie'),
                 ExpandedButton(
                   active: true,
                   onTap: _getPreviousRating(),
-                  text: 'Retry',
+                  text: 'Spróbuj ponownie',
                 ),
               ],
             ),
@@ -168,10 +177,10 @@ class _FilmScreenState extends State<FilmScreen> {
                     Icons.error,
                     color: Colors.red,
                   ),
-                  const Text('Something went wrong. Please, try again'),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
                   ExpandedButton(
                     onTap: _refreshCast,
-                    text: 'Retry',
+                    text: 'Spróbuj ponownie',
                   ),
                 ],
               ),
@@ -210,10 +219,10 @@ class _FilmScreenState extends State<FilmScreen> {
                     Icons.error,
                     color: Colors.red,
                   ),
-                  const Text('Something went wrong. Please, try again'),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
                   ExpandedButton(
                     onTap: _refreshComments,
-                    text: 'Retry',
+                    text: 'Spróbuj ponownie',
                   ),
                 ],
               ),
@@ -277,10 +286,79 @@ class _FilmScreenState extends State<FilmScreen> {
                     Icons.error,
                     color: Colors.red,
                   ),
-                  const Text('Something went wrong. Please, try again'),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
                   ExpandedButton(
                     onTap: _refreshComments,
-                    text: 'Retry',
+                    text: 'Spróbuj ponownie',
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    ];
+  }
+
+  _prizes() {
+    return [
+      Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              'Nagrody',
+              style: TextStyle(fontSize: 20),
+            ),
+            Icon(
+              Icons.diamond_outlined,
+              color: Colors.blue,
+            )
+          ],
+        ),
+      ),
+      FutureBuilder(
+        future: futurePrizes,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return snap.data!.isNotEmpty
+                ? SizedBox(
+                    height: 150,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snap.data!.length,
+                        itemBuilder: (context, index) {
+                          return PrizeWidget(
+                              prize: snap.data!.elementAt(index));
+                        }),
+                  )
+                : Center(
+                    child: Column(
+                      children: const [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(' Nie ma recenzji'),
+                      ],
+                    ),
+                  );
+          } else if (snap.hasError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  const Text('Coś poszło nie tak. Spróbuj ponownie'),
+                  ExpandedButton(
+                    onTap: _getPrizes(),
+                    text: 'Spróbuj ponownie',
                   ),
                 ],
               ),

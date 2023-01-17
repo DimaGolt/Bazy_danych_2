@@ -3,6 +3,7 @@ import 'package:mysql_client/mysql_client.dart';
 
 import '../models/film.dart';
 import '../models/person.dart';
+import '../models/prize.dart';
 import '../models/user.dart';
 import '../models/comment.dart';
 
@@ -117,6 +118,16 @@ class DatabaseService extends ChangeNotifier {
           "SELECT * FROM Based.Ocena where UzytkownikID = ${user!.userId} and FilmID = $filmId");
     }
     return int.tryParse(result?.rows.first.colAt(3) ?? '1f');
+  }
+
+  Future<List<Prize>> getPrizes(int filmId) async {
+    var result = await database
+        .execute("SELECT * FROM Based.NagrodaFilm WHERE FilmID = $filmId");
+    List<Prize> prizes = result.rows
+        .map((row) =>
+            Prize(int.parse(row.colAt(1)!), row.colAt(2)!, row.colAt(3)!))
+        .toList();
+    return prizes;
   }
 
   void deleteUser() => user = null;

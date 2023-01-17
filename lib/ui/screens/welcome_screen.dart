@@ -36,16 +36,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ExpandedButton(
-            text: 'Login',
+            text: 'Logowanie',
             onTap: () => context.router.push(const LoginScreenRoute()),
           ),
           ExpandedButton(
-            text: 'Register',
+            text: 'Rejestracja',
             onTap: () => context.router.push(const RegisterScreenRoute()),
           ),
           ExpandedButton(
             onTap: () => context.router.push(const HomeScreenRoute()),
-            text: 'Skip',
+            text: 'Pomiń',
           ),
         ],
       ),

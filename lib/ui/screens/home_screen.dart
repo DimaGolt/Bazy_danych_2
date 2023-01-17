@@ -64,12 +64,12 @@ class HomeScreen extends StatelessWidget {
                     Icons.error,
                     color: Colors.red,
                   ),
-                  Text('Something went wrong. Please, try again'),
+                  Text('Coś poszło nie tak. Spróbuj ponownie'),
                   ExpandedButton(
                     onTap: () {
                       futureFilms = context.read<DatabaseService>().getFilms();
                     },
-                    text: 'Retry',
+                    text: 'Spróbuj ponownie',
                   ),
                 ],
               ),
@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
               size: 50,
             ),
             Text(context.read<DatabaseService>().user?.username ??
-                'Not logged in'),
+                'Nie zalogowany'),
           ],
         ),
         ExpandedButton(
@@ -101,8 +101,8 @@ class HomeScreen extends StatelessWidget {
             context.router.pop();
           },
           text: context.read<DatabaseService>().user == null
-              ? 'Sign in'
-              : 'Logout',
+              ? 'Zaloguj'
+              : 'Wyloguj',
         )
       ],
     );
