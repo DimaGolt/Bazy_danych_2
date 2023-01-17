@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/person.dart';
+import '../../models/comment.dart';
+import '../widgets/comment_tile.dart';
 import '../widgets/expanded_button.dart';
 
 class FilmScreen extends StatefulWidget {
@@ -17,20 +19,28 @@ class FilmScreen extends StatefulWidget {
 
 class _FilmScreenState extends State<FilmScreen> {
   late Future<List<Person>> futureCast;
+  late Future<List<Comment>> futureComments;
   List<Person> cast = [];
+
+  Film get film => widget.film;
 
   @override
   void initState() {
     _refreshCast();
+    _refreshComments();
     super.initState();
   }
 
   _refreshCast() {
-    futureCast = context.read<DatabaseService>().getPeople(widget.film.id)
+    futureCast = context.read<DatabaseService>().getPeople(film.id)
       ..then((value) {
         cast.addAll(value);
         setState(() {});
       });
+  }
+
+  _refreshComments() {
+    futureComments = context.read<DatabaseService>().getComments(film.id);
   }
 
   @override
@@ -40,10 +50,13 @@ class _FilmScreenState extends State<FilmScreen> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.film.name),
+              Center(child: Text(film.name)),
+              ..._filmDesc(),
               SizedBox(height: 20),
               ..._cast(),
+              ..._comments(),
             ],
           ),
         ),
@@ -51,9 +64,18 @@ class _FilmScreenState extends State<FilmScreen> {
     );
   }
 
+  _filmDesc() {
+    return [
+      Text('Czas trwania: ${film.length}'),
+      Text('Rok produkcji: ${film.dateOfProd}'),
+      if (film.genre != 'NULL') Text('Gatunek: ${film.genre}'),
+      Text('Średnia ocena: ${film.rating.toStringAsFixed(2)}')
+    ];
+  }
+
   _cast() {
     return [
-      if (cast.isNotEmpty) Text('Obsada'),
+      if (cast.isNotEmpty) const Center(child: Text('Obsada')),
       SizedBox(
         height: 150,
         child: FutureBuilder(
@@ -72,11 +94,11 @@ class _FilmScreenState extends State<FilmScreen> {
               return Center(
                 child: Column(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.error,
                       color: Colors.red,
                     ),
-                    Text('Something went wrong. Please, try again'),
+                    const Text('Something went wrong. Please, try again'),
                     ExpandedButton(
                       onTap: _refreshCast,
                       text: 'Retry',
@@ -85,10 +107,52 @@ class _FilmScreenState extends State<FilmScreen> {
                 ),
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ),
+      ),
+    ];
+  }
+
+  _comments() {
+    return [
+      const Center(child: Text('Komentarze')),
+      FutureBuilder(
+        future: futureComments,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return snap.data!.isNotEmpty
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: snap.data!
+                        .map((comment) => CommentTile(comment: comment))
+                        .toList(),
+                  )
+                : const Center(
+                    child: Text(' Nie ma komentarzy'),
+                  );
+          } else if (snap.hasError) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  const Text('Something went wrong. Please, try again'),
+                  ExpandedButton(
+                    onTap: _refreshComments,
+                    text: 'Retry',
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     ];
   }

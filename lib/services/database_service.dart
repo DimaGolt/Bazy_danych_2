@@ -4,6 +4,7 @@ import 'package:mysql_client/mysql_client.dart';
 import '../models/film.dart';
 import '../models/person.dart';
 import '../models/user.dart';
+import '../models/comment.dart';
 
 class DatabaseService extends ChangeNotifier {
   late MySQLConnection database;
@@ -47,10 +48,16 @@ class DatabaseService extends ChangeNotifier {
   }
 
   Future<List<Film>> getFilms() async {
-    var result = await database.execute('SELECT * FROM Based.Film;');
+    var result = await database.execute('SELECT * FROM Based.FilmyWidok;');
     List<Film> films = result.rows
-        .map((row) => Film(int.parse(row.colAt(0)!), int.parse(row.colAt(1)!),
-            row.colAt(2)!, row.colAt(3)!, row.colAt(4)!))
+        .map((row) => Film(
+              int.parse(row.colAt(0)!),
+              int.parse(row.colAt(2)!),
+              row.colAt(3)!,
+              row.colAt(4)!,
+              row.colAt(1)!,
+              double.parse(row.colAt(6)!),
+            ))
         .toList();
     return films;
   }
@@ -64,6 +71,17 @@ class DatabaseService extends ChangeNotifier {
             dateOfDeath: row.colAt(6)))
         .toList();
     return people;
+  }
+
+  Future<List<Comment>> getComments(int filmId) async {
+    var result = await database.execute(
+        'SELECT * FROM Based.KomentarzeWidok where FilmId = :filmId',
+        {"filmId": filmId});
+    List<Comment> comments = result.rows
+        .map((row) =>
+            Comment(int.parse(row.colAt(0)!), row.colAt(2)!, row.colAt(3)!))
+        .toList();
+    return comments;
   }
 
   void deleteUser() => user = null;
