@@ -120,12 +120,26 @@ class DatabaseService extends ChangeNotifier {
     return int.tryParse(result?.rows.first.colAt(3) ?? '1f');
   }
 
-  Future<List<Prize>> getPrizes(int filmId) async {
+  Future<List<Prize>> getFilmPrizes(int filmId) async {
     var result = await database
         .execute("SELECT * FROM Based.NagrodaFilm WHERE FilmID = $filmId");
     List<Prize> prizes = result.rows
-        .map((row) =>
-            Prize(int.parse(row.colAt(1)!), row.colAt(2)!, row.colAt(3)!))
+        .map((row) => Prize(
+            filmId: int.parse(row.colAt(1)!), row.colAt(2)!, row.colAt(3)!))
+        .toList();
+    return prizes;
+  }
+
+  Future<List<Prize>> getPersonPrizes(int personId) async {
+    var result = await database.execute(
+        "SELECT * FROM Based.NagrodyAktorWidok WHERE ObsadaID = $personId");
+    List<Prize> prizes = result.rows
+        .map((row) => Prize(
+              row.colAt(2)!,
+              row.colAt(3)!,
+              personId: int.parse(row.colAt(1)!),
+              filmName: row.colAt(4),
+            ))
         .toList();
     return prizes;
   }

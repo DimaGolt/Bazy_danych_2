@@ -51,6 +51,16 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    PersonScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<PersonScreenRouteArgs>();
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: PersonScreen(
+          key: args.key,
+          person: args.person,
+        ),
+      );
+    },
   };
 
   @override
@@ -74,6 +84,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           FilmScreenRoute.name,
           path: '/film-screen',
+        ),
+        RouteConfig(
+          PersonScreenRoute.name,
+          path: '/person-screen',
         ),
       ];
 }
@@ -157,5 +171,39 @@ class FilmScreenRouteArgs {
   @override
   String toString() {
     return 'FilmScreenRouteArgs{key: $key, film: $film}';
+  }
+}
+
+/// generated route for
+/// [PersonScreen]
+class PersonScreenRoute extends PageRouteInfo<PersonScreenRouteArgs> {
+  PersonScreenRoute({
+    Key? key,
+    required Person person,
+  }) : super(
+          PersonScreenRoute.name,
+          path: '/person-screen',
+          args: PersonScreenRouteArgs(
+            key: key,
+            person: person,
+          ),
+        );
+
+  static const String name = 'PersonScreenRoute';
+}
+
+class PersonScreenRouteArgs {
+  const PersonScreenRouteArgs({
+    this.key,
+    required this.person,
+  });
+
+  final Key? key;
+
+  final Person person;
+
+  @override
+  String toString() {
+    return 'PersonScreenRouteArgs{key: $key, person: $person}';
   }
 }

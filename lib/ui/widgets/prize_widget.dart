@@ -14,15 +14,14 @@ class PrizeWidget extends StatelessWidget {
         elevation: 3,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(prize.name),
-                Text('Data przyznania: ${prize.dateOfSuccess}'),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(prize.name),
+              if (prize.filmName != null) Text('Film: ${prize.filmName}'),
+              Text('Data przyznania: ${prize.dateOfSuccess}'),
+            ],
           ),
         ),
       ),

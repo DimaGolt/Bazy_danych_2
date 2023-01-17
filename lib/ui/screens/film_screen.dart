@@ -63,7 +63,7 @@ class _FilmScreenState extends State<FilmScreen> {
   }
 
   _getPrizes() {
-    futurePrizes = context.read<DatabaseService>().getPrizes(film.id);
+    futurePrizes = context.read<DatabaseService>().getFilmPrizes(film.id);
   }
 
   @override
