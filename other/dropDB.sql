@@ -9,4 +9,8 @@ Drop table Uzytkownik;
 Drop table NagrodaFilm;
 Drop table Film;
 Drop view FilmyWidok;
+Drop view RolaWidok;
+Drop view KomentarzeWidok;
+Drop view RecenzjeWidok;
+Drop view NagrodyAktorWidok;
 Drop view AktorzyWidok;

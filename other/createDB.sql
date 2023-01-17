@@ -1,5 +1,5 @@
 CREATE TABLE Film (
-FilmID int not null,
+FilmID int not null AUTO_INCREMENT,
 CzasTrwania int,
 RokProdukcji date,
 Gatunek varchar(20),
@@ -8,7 +8,7 @@ LinkDoPlakatu varchar(20),
 PRIMARY KEY (FilmID)
 );
 CREATE TABLE Obsada (
-ObsadaID int not null,
+ObsadaID int not null AUTO_INCREMENT,
 Imie varchar(20) not null,
 Nazwisko varchar(20) not null,
 DataUrodzenia date,
@@ -17,7 +17,7 @@ KrajUrodzenia varchar(20),
 PRIMARY KEY (ObsadaID)
 );
 CREATE TABLE Rola (
-RolaID int not null,
+RolaID int not null AUTO_INCREMENT,
 ObsadaID int not null,
 FilmID int not null,
 RodzajRoli varchar(20) not null,
@@ -33,7 +33,7 @@ PoziomDostepu int not NULL,
 PRIMARY KEY (UzytkownikID)
 );
 CREATE TABLE NagrodaAktor (
-NagrodaAktorID int not null,
+NagrodaAktorID int not null AUTO_INCREMENT,
 ObsadaID int not null,
 NazwaNagrody varchar(20),
 DataPrzyznania date,
@@ -44,7 +44,7 @@ PRIMARY KEY (NagrodaAktorID),
 FOREIGN KEY (ObsadaID) REFERENCES Obsada(ObsadaID)
 );
 CREATE TABLE Komentarz (
-KomentarzID int not null,
+KomentarzID int not null AUTO_INCREMENT,
 FilmID int not null,
 UzytkownikID int not null,
 Tresc varchar(200) not null,
@@ -54,7 +54,7 @@ FOREIGN KEY (UzytkownikID) REFERENCES Uzytkownik(UzytkownikID)
 );
 --------------------------
 CREATE TABLE Ocena (
-OcenyID int not NULL,
+OcenyID int not NULL AUTO_INCREMENT,
 FilmID int not NULL,
 UzytkownikID int not NULL,
 Wartosc int not NULL,
@@ -63,7 +63,7 @@ FOREIGN KEY (FilmID) REFERENCES Film(FilmID),
 FOREIGN KEY (UzytkownikID) REFERENCES Uzytkownik(UzytkownikID)
 );
 CREATE TABLE Recenzja (
-RecenzjaID int not NULL,
+RecenzjaID int not NULL AUTO_INCREMENT,
 FilmID int not NULL,
 UzytkownikID int not NULL,
 Tresc varchar(200) not NULL,
@@ -81,7 +81,7 @@ FOREIGN KEY (FilmID) REFERENCES Film(FilmID),
 FOREIGN KEY (UzytkownikID) REFERENCES Uzytkownik(UzytkownikID)
 );
 CREATE TABLE NagrodaFilm (
-NagrodaFilmID int not null,
+NagrodaFilmID int not null AUTO_INCREMENT,
 FilmID int not null,
 NazwaNagrody varchar(20) not null,
 DataPrzyznania date,
@@ -90,37 +90,44 @@ Kategoria varchar(20),
 PRIMARY KEY (NagrodaFilmID),
 FOREIGN KEY (FilmID) REFERENCES Film(FilmID)
 );
+
 CREATE VIEW FilmyWidok AS
 SELECT FilmID as "ID", Nazwa, CzasTrwania, RokProdukcji, Gatunek,
 LinkDoPlakatu, (SELECT avg(wartosc) from Ocena o JOIN Film f on o.filmid = f.filmid where o.filmid 
 = f.filmid) as "srednia"
 FROM Film;
+
 CREATE VIEW RolaWidok AS
-SELECT r.FilmID as "ID", r.ObsadaId, r.RodzajRoli, o.Imie, o.Nazwisko, o.DataUrodzenia, o.DataSmierci, o.KrajUrodzenia 
+SELECT r.FilmID as "ID", r.ObsadaId, r.RodzajRoli, o.Imie, o.Nazwisko,
+ o.DataUrodzenia, o.DataSmierci, o.KrajUrodzenia 
 FROM Rola r JOIN Obsada o WHERE r.ObsadaId = o.ObsadaId;
+
+CREATE VIEW KomentarzeWidok AS
+SELECT k.KomentarzId as "Id", k.FilmId, u.Login, k.Tresc
+FROM Komentarz k JOIN Uzytkownik u WHERE k.UzytkownikId = u.UzytkownikId;
+
+CREATE VIEW RecenzjeWidok AS
+SELECT k.RecenzjaID as "Id", k.FilmId, u.Login, k.Tresc
+FROM Recenzja k JOIN Uzytkownik u WHERE k.UzytkownikId = u.UzytkownikId;
+
+CREATE VIEW NagrodyAktorWidok AS
+SELECT a.NagrodaAktorID as "Id", a.ObsadaID, a.NazwaNagrody, a.DataPrzyznania, f.Nazwa
+FROM NagrodaAktor a JOIN Film f WHERE a.FilmID = f.FilmID;
+
 CREATE VIEW AktorzyWidok AS
 SELECT Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia
 FROM Obsada;
--- CREATE TRIGGER KomentarzUsuniecie
--- AFTER DELETE ON Komentarz
--- FOR EACH ROW
--- Set action = 'update',
--- 	komentarzID = OLD.komentarzID,FilmFilm
---     filmID = OLD.filmId,
---     UzytkownikId = OLD.UzytkownikID,
---     DataUsuniecia = CURRENT_TIMESTAMP,
---     Tresc = OLD.Tresc;
--- 
-INSERT INTO Film (FilmID, CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
-VALUES ('521232', '162', '2003-04-21', 'Thriller', 'Below Zero', '/plakaty/23859254');
-INSERT INTO Film (FilmID, CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
-VALUES ('532789', '184', '2004-11-27', 'Komedia', 'Free Guy', '/plakaty/238292236');
-INSERT INTO Film (FilmID, CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
-VALUES ('523801', '97', '2015-02-03', 'Akcji', 'Nobody', '/plakaty/23859987');
-INSERT INTO Film (FilmID, CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
-VALUES ('524362', '121', '2013-08-11', 'Fantasy', 'Constantine', '/plakaty/234359254');
-INSERT INTO Film (FilmID, CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
-VALUES ('523698', '112', '2020-12-27', 'NULL', 'Morbius', 'NULL');
+
+INSERT INTO Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
+VALUES ('162', '2003-04-21', 'Thriller', 'Below Zero', '/plakaty/23859254');
+INSERT INTO Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
+VALUES ('184', '2004-11-27', 'Komedia', 'Free Guy', '/plakaty/238292236');
+INSERT INTO Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
+VALUES ('97', '2015-02-03', 'Akcji', 'Nobody', '/plakaty/23859987');
+INSERT INTO Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
+VALUES ('121', '2013-08-11', 'Fantasy', 'Constantine', '/plakaty/234359254');
+INSERT INTO Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu)
+VALUES ('112', '2020-12-27', 'NULL', 'Morbius', 'NULL');
 INSERT INTO Uzytkownik (Login, Haslo, PoziomDostepu)
 VALUES ('andrzejM', 'mandrzej', '1');
 INSERT INTO Uzytkownik (Login, Haslo, PoziomDostepu)
@@ -131,87 +138,89 @@ INSERT INTO Uzytkownik (Login, Haslo, PoziomDostepu)
 VALUES ('agataG', '123578', '1');
 INSERT INTO Uzytkownik (Login, Haslo, PoziomDostepu)
 VALUES ('kfsuvmnsau', '987654321', '2');
-INSERT INTO Komentarz (KomentarzID, FilmID, UzytkownikID, Tresc)
-VALUES ('328143', '523698', '1', 'fajne');
-INSERT INTO Komentarz (KomentarzID, FilmID, UzytkownikID, Tresc)
-VALUES ('326743', '524362', '2', 'ok');
-INSERT INTO Komentarz (KomentarzID, FilmID, UzytkownikID, Tresc)
-VALUES ('323543', '523801', '3', 'zasnalem');
-INSERT INTO Komentarz (KomentarzID, FilmID, UzytkownikID, Tresc)
-VALUES ('325443', '532789', '4', 'nie polecam');
-INSERT INTO Komentarz (KomentarzID, FilmID, UzytkownikID, Tresc)
-VALUES ('328033', '521232', '5', 'Część większego dzieła, serdecznie polecam');
-INSERT INTO Recenzja (RecenzjaID, FilmID, UzytkownikID, Tresc)
-VALUES ('743433', '521232', '3', 'Słaba produkcja, scenografia i muzyka.');
-INSERT INTO Recenzja (RecenzjaID, FilmID, UzytkownikID, Tresc)
-VALUES ('323353', '521232', '1', 'Bardzo dobra gra aktorska, zasłużony Oskar');
-INSERT INTO Recenzja (RecenzjaID, FilmID, UzytkownikID, Tresc)
-VALUES ('323073', '521232', '2', 'Główny bohater bez wyrazu, poza tym genialna muzyka i 
+INSERT INTO Uzytkownik (Login, Haslo, PoziomDostepu)
+VALUES ('admin', 'root', '0');
+INSERT INTO Komentarz (FilmID, UzytkownikID, Tresc)
+VALUES ('5', '1', 'fajne');
+INSERT INTO Komentarz (FilmID, UzytkownikID, Tresc)
+VALUES ('4', '2', 'ok');
+INSERT INTO Komentarz (FilmID, UzytkownikID, Tresc)
+VALUES ( '3', '3', 'zasnalem');
+INSERT INTO Komentarz (FilmID, UzytkownikID, Tresc)
+VALUES ( '2', '4', 'nie polecam');
+INSERT INTO Komentarz (FilmID, UzytkownikID, Tresc)
+VALUES ( '1', '5', 'Część większego dzieła, serdecznie polecam');
+INSERT INTO Recenzja (FilmID, UzytkownikID, Tresc)
+VALUES ('1', '3', 'Słaba produkcja, scenografia i muzyka.');
+INSERT INTO Recenzja (FilmID, UzytkownikID, Tresc)
+VALUES ('1', '1', 'Bardzo dobra gra aktorska, zasłużony Oskar');
+INSERT INTO Recenzja (FilmID, UzytkownikID, Tresc)
+VALUES ('1', '2', 'Główny bohater bez wyrazu, poza tym genialna muzyka i 
 scenografia');
-INSERT INTO Recenzja (RecenzjaID, FilmID, UzytkownikID, Tresc)
-VALUES ('323083', '524362', '2', 'Spory przeskok między pierwszą częścią, niestety na 
+INSERT INTO Recenzja (FilmID, UzytkownikID, Tresc)
+VALUES ('4', '2', 'Spory przeskok między pierwszą częścią, niestety na 
 niekorzyść twórcy');
-INSERT INTO Recenzja (RecenzjaID, FilmID, UzytkownikID, Tresc)
-VALUES ('324563', '524362', '4', 'Bardzo dobra gra aktorska, zasłużony Oskar');
-INSERT INTO Ocena (OcenyID, FilmID, UzytkownikID, Wartosc)
-VALUES ('946523', '521232', '2', '5');
-INSERT INTO Ocena (OcenyID, FilmID, UzytkownikID, Wartosc)
-VALUES ('943223', '532789', '1', '4');
-INSERT INTO Ocena (OcenyID, FilmID, UzytkownikID, Wartosc)
-VALUES ('976523', '523801', '3', '3');
-INSERT INTO Ocena (OcenyID, FilmID, UzytkownikID, Wartosc)
-VALUES ('476523', '524362', '2', '2');
-INSERT INTO Ocena (OcenyID, FilmID, UzytkownikID, Wartosc)
-VALUES ('947623', '523698', '4', '1');
+INSERT INTO Recenzja (FilmID, UzytkownikID, Tresc)
+VALUES ('4', '4', 'Bardzo dobra gra aktorska, zasłużony Oskar');
+INSERT INTO Ocena (FilmID, UzytkownikID, Wartosc)
+VALUES ('1', '2', '5');
+INSERT INTO Ocena (FilmID, UzytkownikID, Wartosc)
+VALUES ('2', '1', '4');
+INSERT INTO Ocena (FilmID, UzytkownikID, Wartosc)
+VALUES ('3', '3', '3');
+INSERT INTO Ocena (FilmID, UzytkownikID, Wartosc)
+VALUES ('4', '2', '2');
+INSERT INTO Ocena (FilmID, UzytkownikID, Wartosc)
+VALUES ('5', '4', '1');
 -----------------------
-INSERT INTO Obsada (ObsadaID, Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
-VALUES ('787623', 'Andrzej', 'Matysiak', '1967-04-06', NULL, 'Polska');
-INSERT INTO Obsada (ObsadaID, Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
-VALUES ('797623', 'Marcin', 'Matysiak', '1997-04-08', NULL, 'Polska');
-INSERT INTO Obsada (ObsadaID, Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
-VALUES ('727623', 'Sławomir', 'Żbik', '1983-09-24', NULL, 'Polska');
-INSERT INTO Obsada (ObsadaID, Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
-VALUES ('737623', 'Danuta', 'Wajda', '1999-07-12', NULL, 'Polska');
-INSERT INTO Obsada (ObsadaID, Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
-VALUES ('758623', 'Andrzej', 'Wojciechowski', '2002-10-10', NULL, 'Polska');
-INSERT INTO Rola (ObsadaID, RolaID, FilmID, RodzajRoli)
-VALUES ('787623', '522398', '521232', 'Scenarzysta');
-INSERT INTO Rola (ObsadaID, RolaID, FilmID, RodzajRoli)
-VALUES ('797623', '522638', '521232', 'Główny aktor');
-INSERT INTO Rola (ObsadaID, RolaID, FilmID, RodzajRoli)
-VALUES ('727623', '522000', '521232', 'Reżyser');
-INSERT INTO Rola (ObsadaID, RolaID, FilmID, RodzajRoli)
-VALUES ('737623', '522001', '521232', 'Scenarzysta');
-INSERT INTO Rola (ObsadaID, RolaID, FilmID, RodzajRoli)
-VALUES ('758623', '522002', '521232', 'Aktor Drugoplanowy');
+INSERT INTO Obsada (Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
+VALUES ('Andrzej', 'Matysiak', '1967-04-06', NULL, 'Polska');
+INSERT INTO Obsada (Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
+VALUES ('Marcin', 'Matysiak', '1997-04-08', NULL, 'Polska');
+INSERT INTO Obsada (Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
+VALUES ('Sławomir', 'Żbik', '1983-09-24', NULL, 'Polska');
+INSERT INTO Obsada (Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
+VALUES ('Danuta', 'Wajda', '1999-07-12', NULL, 'Polska');
+INSERT INTO Obsada (Imie, Nazwisko, DataUrodzenia, DataSmierci, KrajUrodzenia)
+VALUES ('Andrzej', 'Wojciechowski', '2002-10-10', NULL, 'Polska');
+INSERT INTO Rola (ObsadaID, FilmID, RodzajRoli)
+VALUES ('1', '1', 'Scenarzysta');
+INSERT INTO Rola (ObsadaID, FilmID, RodzajRoli)
+VALUES ('2', '1', 'Główny aktor');
+INSERT INTO Rola (ObsadaID, FilmID, RodzajRoli)
+VALUES ('3', '1', 'Reżyser');
+INSERT INTO Rola (ObsadaID, FilmID, RodzajRoli)
+VALUES ('4', '1', 'Scenarzysta');
+INSERT INTO Rola (ObsadaID,  FilmID, RodzajRoli)
+VALUES ('5', '1', 'Aktor Drugoplanowy');
 ----
-INSERT INTO NagrodaFilm (NagrodaFilmID, NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
+INSERT INTO NagrodaFilm (NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
 FilmID, Kategoria)
-VALUES ('127623', 'Złota Palma', '2001-12-08', NULL, '524362', NULL);
-INSERT INTO NagrodaFilm (NagrodaFilmID, NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
+VALUES ('Złota Palma', '2001-12-08', NULL, '1', NULL);
+INSERT INTO NagrodaFilm (NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
 FilmID, Kategoria)
-VALUES ('137623', 'Złota Palma', '2001-12-08', NULL, '524362', NULL);
-INSERT INTO NagrodaFilm (NagrodaFilmID, NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
+VALUES ('Złota Palma', '2001-12-08', NULL, '2', NULL);
+INSERT INTO NagrodaFilm (NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
 FilmID, Kategoria)
-VALUES ('147623', 'Złota Palma', '2001-12-08', NULL, '524362', NULL);
-INSERT INTO NagrodaFilm (NagrodaFilmID, NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
+VALUES ('Złota Palma', '2001-12-08', NULL, '3', NULL);
+INSERT INTO NagrodaFilm (NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
 FilmID, Kategoria)
-VALUES ('157623', 'Złota Palma', '2001-12-08', NULL, '521232', NULL);
-INSERT INTO NagrodaFilm (NagrodaFilmID, NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
+VALUES ('Złota Palma', '2001-12-08', NULL, '4', NULL);
+INSERT INTO NagrodaFilm (NazwaNagrody, DataPrzyznania, MiejscePrzyznania, 
 FilmID, Kategoria)
-VALUES ('167623', 'Złota Palma', '2001-12-08', NULL, '521232', NULL);
-INSERT INTO NagrodaAktor (NagrodaAktorID, ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
+VALUES ('Złota Palma', '2001-12-08', NULL, '5', NULL);
+INSERT INTO NagrodaAktor (ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
 MiejscePrzyznania, Kategoria)
-VALUES ('087623', '758623','521232', 'Oskar', '2014-08-26', NULL, NULL);
-INSERT INTO NagrodaAktor (NagrodaAktorID, ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
+VALUES ('5','1', 'Oskar', '2014-08-26', NULL, NULL);
+INSERT INTO NagrodaAktor (ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
 MiejscePrzyznania, Kategoria)
-VALUES ('097623', '737623','532789', 'Oskar', '2014-08-26', NULL, NULL);
-INSERT INTO NagrodaAktor (NagrodaAktorID, ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
+VALUES ('4','1', 'Oskar', '2014-08-26', NULL, NULL);
+INSERT INTO NagrodaAktor (ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
 MiejscePrzyznania, Kategoria)
-VALUES ('077623', '727623','523801', 'Oskar', '1967-04-06', NULL, NULL);
-INSERT INTO NagrodaAktor (NagrodaAktorID, ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
+VALUES ('3','1', 'Oskar', '1967-04-06', NULL, NULL);
+INSERT INTO NagrodaAktor (ObsadaID, FilmID, NazwaNagrody, DataPrzyznania, 
 MiejscePrzyznania, Kategoria)
-VALUES ('067623', '797623','524362', 'Oskar', '1967-04-06', NULL, NULL);
-INSERT INTO NagrodaAktor (NagrodaAktorID, ObsadaID,FilmID, NazwaNagrody, DataPrzyznania, 
+VALUES ('2','1', 'Oskar', '1967-04-06', NULL, NULL);
+INSERT INTO NagrodaAktor (ObsadaID,FilmID, NazwaNagrody, DataPrzyznania, 
 MiejscePrzyznania, Kategoria)
-VALUES ('057623', '787623', '523698','Oskar', '1967-04-06', NULL, NULL)
+VALUES ('1', '1','Oskar', '1967-04-06', NULL, NULL)
