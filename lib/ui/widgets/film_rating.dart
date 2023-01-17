@@ -58,7 +58,7 @@ class _FilmRatingState extends State<FilmRating> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Żeby dodać komentarz musisz być zalogowany'),
+        Text('Żeby dodać ocenę musisz być zalogowany'),
         ExpandedButton(
           text: 'Zaloguj',
           onTap: () => context.router.push(const LoginScreenRoute()),

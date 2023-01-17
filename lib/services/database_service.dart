@@ -35,7 +35,7 @@ class DatabaseService extends ChangeNotifier {
 
   Future<bool> register(String username, String password) async {
     await database.execute(
-        "INSERT INTO Based.Uzytkownik (Login, Haslo, PoziomDostepu) VALUES ('$username', '$password', '1')");
+        "INSERT INTO Based.Uzytkownik (Login, Haslo, PoziomDostepu) VALUES ('$username', '$password', '2')");
     var result = await database.execute(
         "SELECT * FROM Based.Uzytkownik WHERE Login = :username AND Haslo = :password",
         {"username": username, "password": password});
@@ -98,6 +98,11 @@ class DatabaseService extends ChangeNotifier {
   Future<void> sendComment(int filmId, String desc) async {
     await database.execute(
         "INSERT INTO Based.Komentarz (FilmID, UzytkownikID, Tresc) VALUES ('$filmId', '${user!.userId}', '$desc')");
+  }
+
+  Future<void> sendOpinion(int filmId, String desc) async {
+    await database.execute(
+        "INSERT INTO Based.Recenzja (FilmID, UzytkownikID, Tresc) VALUES ('$filmId', '${user!.userId}', '$desc')");
   }
 
   Future<void> sendRating(int filmId, int rating) async {

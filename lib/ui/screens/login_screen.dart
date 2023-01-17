@@ -33,17 +33,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Logowanie'),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formState,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(20.0),
                 child: TextFormField(
                   focusNode: _usernameNode,
                   key: _loginFieldKey,
@@ -51,14 +55,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? 'Nazwa użytkownika nie może być pusta'
                       : null,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration:
+                      const InputDecoration(labelText: 'Nazwa użytkownika'),
                 ),
               ),
               ValueListenableBuilder<bool>(
                 valueListenable: _passwordIsObscuredNotifier,
                 builder: (context, isObscured, _) {
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: TextFormField(
                       focusNode: _passwordNode,
                       key: _passwordFieldKey,
@@ -69,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         suffixIcon: IconButton(
                           onPressed: () =>
                               _passwordIsObscuredNotifier.value = !isObscured,
-                          icon: Icon(Icons.remove_red_eye_rounded),
+                          icon: const Icon(Icons.remove_red_eye_rounded),
                         ),
-                        labelText: 'Password',
+                        labelText: 'Hasło',
                       ),
                     ),
                   );
@@ -79,8 +84,26 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ExpandedButton(
                 onTap: _validateAndLogin,
-                text: 'Login',
-              )
+                text: 'Zaloguj',
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Nie masz konta? ',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        context.router.popAndPush(const RegisterScreenRoute()),
+                    child: const Text(
+                      'Zarejestruj się!',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ),
@@ -92,7 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formState.currentState!.validate()) {
       var result = await dbService.login(_loginFieldKey.currentState!.value!,
           _passwordFieldKey.currentState!.value!);
-      result ? context.replaceRoute(const HomeScreenRoute()) : print('bruh');
+      result
+          ? context.replaceRoute(const HomeScreenRoute())
+          : ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+              'Nie udało się zalogować. Nazwa użytkownika lub hasło jest niepoprawne.',
+              textAlign: TextAlign.center,
+            )));
     }
   }
 }

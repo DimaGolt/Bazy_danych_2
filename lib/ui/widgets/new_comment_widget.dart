@@ -5,6 +5,7 @@ import 'package:bazy_flutter/ui/widgets/expanded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user.dart';
 import '../../routing/app_router.dart';
 
 class NewCommentWidget extends StatelessWidget {
@@ -22,31 +23,42 @@ class NewCommentWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: context.read<DatabaseService>().user != null
-              ? _newComment(context)
+              ? _newComment(context, context.read<DatabaseService>().user!)
               : _accessDenied(context),
         ),
       ),
     );
   }
 
-  _newComment(BuildContext context) {
+  _newComment(BuildContext context, User user) {
     String comment = '';
+    bool professional = user.accessLevel == 1;
 
     return Container(
       height: 150,
       child: Column(
         children: [
           TextField(
-            decoration:
-                const InputDecoration(label: Text('Wpisz swój komentarz...')),
+            decoration: InputDecoration(
+              label: Text(professional
+                  ? 'Wpisz swoją recenzję...'
+                  : 'Wpisz swój komentarz...'),
+            ),
             maxLength: 200,
             onChanged: (value) => comment = value,
           ),
           ExpandedButton(
-            text: 'Wyślij komentarz',
+            text: professional ? 'Wyślij recenzję' : 'Wyślij komentarz',
+            active: true,
             onTap: () {
               if (comment.isNotEmpty) {
-                context.read<DatabaseService>().sendComment(film.id, comment);
+                professional
+                    ? context
+                        .read<DatabaseService>()
+                        .sendOpinion(film.id, comment)
+                    : context
+                        .read<DatabaseService>()
+                        .sendComment(film.id, comment);
                 afterSubmit?.call();
               }
             },

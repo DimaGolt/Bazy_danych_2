@@ -33,63 +33,80 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Rejestracja'),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formState,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: TextFormField(
+                  focusNode: _usernameNode,
+                  key: _usernameFieldKey,
+                  keyboardType: TextInputType.name,
+                  validator: (value) => value!.isNotEmpty
+                      ? null
+                      : 'Nazwa użytkownika nie może być pusta',
+                  decoration: InputDecoration(labelText: 'Nazwa użytkownika'),
+                ),
+              ),
+              ValueListenableBuilder<bool>(
+                valueListenable: _passwordIsObscuredNotifier,
+                builder: (context, isObscured, _) {
+                  return Padding(
+                    padding: const EdgeInsets.all(20),
                     child: TextFormField(
-                      focusNode: _usernameNode,
-                      key: _usernameFieldKey,
-                      keyboardType: TextInputType.name,
-                      validator: (value) => value!.isNotEmpty
-                          ? null
-                          : 'Nazwa użytkownika nie może być pusta', //TODO: check unique username
-                      decoration: InputDecoration(labelText: 'Username'),
-                    ),
-                  ),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _passwordIsObscuredNotifier,
-                    builder: (context, isObscured, _) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: TextFormField(
-                          focusNode: _passwordNode,
-                          key: _passwordFieldKey,
-                          obscureText: isObscured,
-                          validator: (value) => value!.isNotEmpty
-                              ? null
-                              : "Hasło nie może być puste",
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () => _passwordIsObscuredNotifier
-                                  .value = !isObscured,
-                              icon: const Icon(Icons.remove_red_eye_rounded),
-                            ),
-                          ),
+                      focusNode: _passwordNode,
+                      key: _passwordFieldKey,
+                      obscureText: isObscured,
+                      validator: (value) =>
+                          value!.isNotEmpty ? null : "Hasło nie może być puste",
+                      decoration: InputDecoration(
+                        labelText: 'Hasło',
+                        suffixIcon: IconButton(
+                          onPressed: () =>
+                              _passwordIsObscuredNotifier.value = !isObscured,
+                          icon: const Icon(Icons.remove_red_eye_rounded),
                         ),
-                      );
-                    },
+                      ),
+                    ),
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: ExpandedButton(
+                  onTap: _validateAndRegister,
+                  text: 'Zarejestruj',
+                ),
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Masz już konto? ',
+                    style: TextStyle(fontSize: 16),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ExpandedButton(
-                      onTap: _validateAndRegister,
-                      text: 'Zarejestruj',
+                  GestureDetector(
+                    onTap: () =>
+                        context.router.popAndPush(const LoginScreenRoute()),
+                    child: const Text(
+                      'Zaloguj się!',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
                     ),
                   )
                 ],
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -101,7 +118,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       var result = await dbService.register(
           _usernameFieldKey.currentState!.value!,
           _passwordFieldKey.currentState!.value!);
-      result ? context.replaceRoute(const HomeScreenRoute()) : print('bruh');
+      result
+          ? context.replaceRoute(const HomeScreenRoute())
+          : ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Nie udało się zarejestrować')));
     }
   }
 }

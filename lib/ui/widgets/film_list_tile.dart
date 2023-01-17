@@ -11,9 +11,9 @@ class FilmListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(10.0),
       child: Material(
-        elevation: 2,
+        elevation: 5,
         child: InkWell(
           onTap: () => onTap?.call(),
           child: ListTile(

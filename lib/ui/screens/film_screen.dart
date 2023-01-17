@@ -71,6 +71,7 @@ class _FilmScreenState extends State<FilmScreen> {
           film: film,
           afterSubmit: () {
             _refreshComments();
+            _refreshOpinion();
             setState(() {});
           },
         ),
@@ -157,7 +158,7 @@ class _FilmScreenState extends State<FilmScreen> {
                     }),
               );
             } else {
-              return SizedBox();
+              return const SizedBox();
             }
           } else if (snap.hasError) {
             return Center(
@@ -259,11 +260,11 @@ class _FilmScreenState extends State<FilmScreen> {
                   )
                 : Center(
                     child: Column(
-                      children: [
+                      children: const [
                         SizedBox(
                           height: 20,
                         ),
-                        const Text(' Nie ma recenzji'),
+                        Text(' Nie ma recenzji'),
                       ],
                     ),
                   );
