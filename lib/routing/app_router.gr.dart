@@ -61,6 +61,24 @@ class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    ModerateCommentsScreenRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const ModerateCommentsScreen(),
+      );
+    },
+    AddActorScreenRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const AddActorScreen(),
+      );
+    },
+    AddFilmScreenRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const AddFilmScreen(),
+      );
+    },
   };
 
   @override
@@ -88,6 +106,18 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           PersonScreenRoute.name,
           path: '/person-screen',
+        ),
+        RouteConfig(
+          ModerateCommentsScreenRoute.name,
+          path: '/moderate-comments-screen',
+        ),
+        RouteConfig(
+          AddActorScreenRoute.name,
+          path: '/add-actor-screen',
+        ),
+        RouteConfig(
+          AddFilmScreenRoute.name,
+          path: '/add-film-screen',
         ),
       ];
 }
@@ -206,4 +236,40 @@ class PersonScreenRouteArgs {
   String toString() {
     return 'PersonScreenRouteArgs{key: $key, person: $person}';
   }
+}
+
+/// generated route for
+/// [ModerateCommentsScreen]
+class ModerateCommentsScreenRoute extends PageRouteInfo<void> {
+  const ModerateCommentsScreenRoute()
+      : super(
+          ModerateCommentsScreenRoute.name,
+          path: '/moderate-comments-screen',
+        );
+
+  static const String name = 'ModerateCommentsScreenRoute';
+}
+
+/// generated route for
+/// [AddActorScreen]
+class AddActorScreenRoute extends PageRouteInfo<void> {
+  const AddActorScreenRoute()
+      : super(
+          AddActorScreenRoute.name,
+          path: '/add-actor-screen',
+        );
+
+  static const String name = 'AddActorScreenRoute';
+}
+
+/// generated route for
+/// [AddFilmScreen]
+class AddFilmScreenRoute extends PageRouteInfo<void> {
+  const AddFilmScreenRoute()
+      : super(
+          AddFilmScreenRoute.name,
+          path: '/add-film-screen',
+        );
+
+  static const String name = 'AddFilmScreenRoute';
 }

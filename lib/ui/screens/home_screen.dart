@@ -177,15 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if (_user != null && _user?.accessLevel == 0) ...const [
+            if (_user != null && _user?.accessLevel == 0) ...[
               ExpandedButton(
                 text: 'Moderacja komentarzy',
+                onTap: () =>
+                    context.router.push(const ModerateCommentsScreenRoute()),
               ),
               ExpandedButton(
                 text: 'Dodanie filmów',
+                onTap: () => context.router.push(const AddFilmScreenRoute()),
               ),
               ExpandedButton(
                 text: 'Dodanie aktorów',
+                onTap: () => context.router.push(const AddActorScreenRoute()),
               )
             ],
             ExpandedButton(
