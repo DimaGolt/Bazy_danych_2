@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:bazy_flutter/services/database_service.dart';
 import 'package:bazy_flutter/ui/widgets/expanded_button.dart';
@@ -50,7 +51,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ],
       ),
       body: Center(
-        child: Image.asset("assets/pikachu.gif"),
+        child: GestureDetector(
+          onTap: () => context.router.push(const DBConnectionEditScreenRoute()),
+          child: TextLiquidFill(
+            text: 'Bazy danych 2',
+            waveColor: Colors.greenAccent,
+            boxBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            textStyle: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
     );
   }

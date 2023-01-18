@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../models/film.dart';
 import '../models/person.dart';
+import '../ui/screens/database_connection_edit_screen.dart';
 import '../ui/screens/film_screen.dart';
 import '../ui/screens/login_screen.dart';
 import '../ui/screens/person_screen.dart';
@@ -25,6 +26,7 @@ part 'app_router.gr.dart';
   AutoRoute(page: ModerateCommentsScreen),
   AutoRoute(page: AddActorScreen),
   AutoRoute(page: AddFilmScreen),
+  AutoRoute(page: DBConnectionEditScreen),
   // AutoRoute(page: DeveloperScreen),
 ])
 

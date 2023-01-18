@@ -79,6 +79,12 @@ class _$AppRouter extends RootStackRouter {
         child: const AddFilmScreen(),
       );
     },
+    DBConnectionEditScreenRoute.name: (routeData) {
+      return MaterialPageX<dynamic>(
+        routeData: routeData,
+        child: const DBConnectionEditScreen(),
+      );
+    },
   };
 
   @override
@@ -118,6 +124,10 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(
           AddFilmScreenRoute.name,
           path: '/add-film-screen',
+        ),
+        RouteConfig(
+          DBConnectionEditScreenRoute.name,
+          path: '/d-bconnection-edit-screen',
         ),
       ];
 }
@@ -272,4 +282,16 @@ class AddFilmScreenRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'AddFilmScreenRoute';
+}
+
+/// generated route for
+/// [DBConnectionEditScreen]
+class DBConnectionEditScreenRoute extends PageRouteInfo<void> {
+  const DBConnectionEditScreenRoute()
+      : super(
+          DBConnectionEditScreenRoute.name,
+          path: '/d-bconnection-edit-screen',
+        );
+
+  static const String name = 'DBConnectionEditScreenRoute';
 }
