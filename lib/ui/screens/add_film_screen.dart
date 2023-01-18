@@ -65,7 +65,7 @@ class _AddFilmScreenState extends State<AddFilmScreen> {
                   decoration: const InputDecoration(labelText: 'Czas trwania'),
                 ),
                 ExpandedButton(
-                  onTap: _validateAndLogin,
+                  onTap: _validateAndAddFilm,
                   text: 'Dodaj film',
                 ),
               ],
@@ -86,7 +86,7 @@ class _AddFilmScreenState extends State<AddFilmScreen> {
     }
   }
 
-  _validateAndLogin() async {
+  _validateAndAddFilm() async {
     if (_formState.currentState!.validate()) {
       Film film = Film(
           1,
@@ -101,6 +101,8 @@ class _AddFilmScreenState extends State<AddFilmScreen> {
         'Dodano film.',
         textAlign: TextAlign.center,
       )));
+      _formState.currentState!.reset();
+      duration = 0;
     }
   }
 }

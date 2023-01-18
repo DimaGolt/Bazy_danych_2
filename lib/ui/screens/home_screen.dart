@@ -62,16 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
         future: futureFilms,
         builder: (_, snap) {
           if (snap.hasData) {
-            return ListView.builder(
-                itemCount: snap.data!.length,
-                itemBuilder: (context, index) {
-                  var film = snap.data!.elementAt(index);
-                  return FilmListTile(
-                    onTap: () =>
-                        context.router.push(FilmScreenRoute(film: film)),
-                    film: film,
-                  );
-                });
+            return RefreshIndicator(
+              onRefresh: () =>
+                  futureFilms = context.read<DatabaseService>().getFilms()
+                    ..then((value) => setState(() {})),
+              child: ListView.builder(
+                  itemCount: snap.data!.length,
+                  itemBuilder: (context, index) {
+                    var film = snap.data!.elementAt(index);
+                    return FilmListTile(
+                      onTap: () =>
+                          context.router.push(FilmScreenRoute(film: film)),
+                      film: film,
+                    );
+                  }),
+            );
           } else if (snap.hasError) {
             return Center(
               child: Column(

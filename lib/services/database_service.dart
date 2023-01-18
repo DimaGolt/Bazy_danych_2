@@ -69,7 +69,7 @@ class DatabaseService extends ChangeNotifier {
         {
           'duration': film.length,
           'dateOfProd': film.dateOfProd,
-          'genre': film.genre,
+          'genre': film.genre.isNotEmpty ? film.genre : 'NULL',
           'name': film.name,
         });
   }
