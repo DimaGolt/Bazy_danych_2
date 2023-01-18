@@ -192,10 +192,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 text: 'Dodanie filmów',
                 onTap: () => context.router.push(const AddFilmScreenRoute()),
               ),
-              ExpandedButton(
-                text: 'Dodanie aktorów',
-                onTap: () => context.router.push(const AddActorScreenRoute()),
-              )
+              // ExpandedButton(
+              //   text: 'Dodanie aktorów',
+              //   onTap: () => context.router.push(const AddActorScreenRoute()),
+              // )
             ],
             ExpandedButton(
               onTap: () {
