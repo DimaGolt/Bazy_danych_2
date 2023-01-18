@@ -70,16 +70,7 @@ Tresc varchar(200) not NULL,
 PRIMARY KEY (RecenzjaID),
 FOREIGN KEY (FilmID) REFERENCES Film(FilmID),
 FOREIGN KEY (UzytkownikID) REFERENCES Uzytkownik(UzytkownikID));
-CREATE TABLE KomentarzHistoria (
-KomentarzID int not null,
-FilmID int not null,
-UzytkownikID int not null,
-DataUsuniecia DATETIME DEFAULT CURRENT_TIMESTAMP,
-Tresc varchar(200) not null,
-PRIMARY KEY (KomentarzID),
-FOREIGN KEY (FilmID) REFERENCES Film(FilmID),
-FOREIGN KEY (UzytkownikID) REFERENCES Uzytkownik(UzytkownikID)
-);
+
 CREATE TABLE NagrodaFilm (
 NagrodaFilmID int not null AUTO_INCREMENT,
 FilmID int not null,
