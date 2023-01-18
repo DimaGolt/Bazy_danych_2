@@ -21,8 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formState = GlobalKey();
   final GlobalKey<FormFieldState<String>> _loginFieldKey = GlobalKey();
   final GlobalKey<FormFieldState<String>> _passwordFieldKey = GlobalKey();
-  final FocusNode _usernameNode = FocusNode();
-  final FocusNode _passwordNode = FocusNode();
 
   @override
   void didChangeDependencies() {
@@ -49,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: TextFormField(
-                  focusNode: _usernameNode,
                   key: _loginFieldKey,
                   validator: (value) => value!.isEmpty
                       ? 'Nazwa użytkownika nie może być pusta'
@@ -65,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: TextFormField(
-                      focusNode: _passwordNode,
                       key: _passwordFieldKey,
                       validator: (value) =>
                           value!.isEmpty ? 'Hasło nie może być puste' : null,

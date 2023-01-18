@@ -63,6 +63,17 @@ class DatabaseService extends ChangeNotifier {
     return films;
   }
 
+  Future<void> addFilm(Film film) async {
+    await database.execute(
+        'INSERT INTO Based.Film (CzasTrwania, RokProdukcji, Gatunek, Nazwa, LinkDoPlakatu) VALUES (:duration, :dateOfProd, :genre, :name, \'NULL\')',
+        {
+          'duration': film.length,
+          'dateOfProd': film.dateOfProd,
+          'genre': film.genre,
+          'name': film.name,
+        });
+  }
+
   Future<List<Person>> getPeopleForFilm(int filmId) async {
     var result = await database.execute(
         'SELECT * FROM Based.RolaWidok where id = :filmId', {"filmId": filmId});
