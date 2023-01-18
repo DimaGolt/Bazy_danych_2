@@ -207,8 +207,14 @@ class _FilmScreenState extends State<FilmScreen> {
                         .map((comment) => CommentTile(comment: comment))
                         .toList(),
                   )
-                : const Center(
-                    child: Text(' Nie ma komentarzy'),
+                : Center(
+                    child: Column(
+                      children: const [
+                        SizedBox(height: 20),
+                        Text(' Nie ma komentarzy'),
+                        SizedBox(height: 20),
+                      ],
+                    ),
                   );
           } else if (snap.hasError) {
             return Center(
@@ -342,7 +348,10 @@ class _FilmScreenState extends State<FilmScreen> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text(' Nie ma recenzji'),
+                        Text('Nie ma nagród'),
+                        SizedBox(
+                          height: 20,
+                        )
                       ],
                     ),
                   );

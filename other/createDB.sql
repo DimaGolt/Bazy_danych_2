@@ -85,8 +85,8 @@ FOREIGN KEY (FilmID) REFERENCES Film(FilmID)
 CREATE VIEW FilmyWidok AS
 SELECT FilmID as "ID", Nazwa, CzasTrwania, RokProdukcji, Gatunek,
 LinkDoPlakatu, (SELECT avg(wartosc) from Ocena o JOIN Film f on o.filmid = f.filmid where o.filmid 
-= f.filmid) as "srednia"
-FROM Film;
+= f2.filmid) as "srednia"
+FROM Film f2;
 
 CREATE VIEW RolaWidok AS
 SELECT r.FilmID as "ID", r.ObsadaId, r.RodzajRoli, o.Imie, o.Nazwisko,
