@@ -95,6 +95,20 @@ class DatabaseService extends ChangeNotifier {
     return comments;
   }
 
+  Future<List<Comment>> getAllComments() async {
+    var result = await database.execute('SELECT * FROM Based.KomentarzeWidok');
+    List<Comment> comments = result.rows
+        .map((row) =>
+            Comment(int.parse(row.colAt(0)!), row.colAt(2)!, row.colAt(3)!))
+        .toList();
+    return comments;
+  }
+
+  Future<void> deleteComment(int commentId) async {
+    await database
+        .execute("DELETE FROM Based.Komentarz WHERE KomentarzID = $commentId");
+  }
+
   Future<List<Comment>> getOpinion(int filmId) async {
     var result = await database.execute(
         'SELECT * FROM Based.RecenzjeWidok where FilmId = :filmId',
