@@ -57,7 +57,7 @@ class DatabaseService extends ChangeNotifier {
               row.colAt(3)!,
               row.colAt(4)!,
               row.colAt(1)!,
-              double.parse(row.colAt(6)!),
+              double.tryParse(row.colAt(6) ?? ''),
             ))
         .toList();
     return films;

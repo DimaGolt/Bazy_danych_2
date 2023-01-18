@@ -110,7 +110,7 @@ class _FilmScreenState extends State<FilmScreen> {
       Text('Czas trwania: ${film.length}'),
       Text('Rok produkcji: ${film.dateOfProd}'),
       if (film.genre != 'NULL') Text('Gatunek: ${film.genre}'),
-      Text('Średnia ocena: ${film.rating.toStringAsFixed(2)}')
+      Text('Średnia ocena: ${film.rating?.toStringAsFixed(2) ?? 'brak ocen'}')
     ];
   }
 
